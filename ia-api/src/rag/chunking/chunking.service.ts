@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class ChunkingService {
     chunk(
         text: string,
-        chunkSize: 500,
+        chunkSize = 500,
         overlap = 100
     ): string[] {
         const chunks: string[] = [];
