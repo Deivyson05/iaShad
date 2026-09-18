@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ChunkingService } from '../chunking/chunking.service';
 import { EmbeddingService } from '../embedding/embedding.service';
-import { PrismaClient, prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class IngestionService {
     constructor(
         private readonly chunking: ChunkingService,
-        private readonly embedding: EmbeddingService
-        private readonly prisma: 
+        private readonly embedding: EmbeddingService,
+        private readonly prisma: PrismaClient
     ) {}
 
     async ingest(
@@ -23,7 +23,7 @@ export class IngestionService {
 
         const chunks = this.chunking.chunk(content);
 
-        for (let i - 0 < chunks.length; i++) {
+        for (let i: number = 0; i < chunks.length; i++) {
             const chunk = chunks[i];
             
             const vector = await this.embedding.generate(chunk);
@@ -31,19 +31,19 @@ export class IngestionService {
             await this.prisma.$executeRaw`
                 INSERT INTO "DocumentChunk"
                     (
-                    id,
-                    "documentId",
-                    content,
-                    "chunkIndex",
-                    embedding
+                        id,
+                        "documentId",
+                        content,
+                        "chunkIndex",
+                        embedding
                     )
                     VALUES
                     (
-                    gen_random_uuid(),
-                    ${document.id},
-                    ${chunk},
-                    ${i},
-                    ${vector}::vector
+                        gen_random_uuid(),
+                        ${document.id},
+                        ${chunk},
+                        ${i},
+                        ${vector}::vector
                     )
             `;
         }
