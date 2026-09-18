@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ChunkingService } from '../chunking/chunking.service';
 import { EmbeddingService } from '../embedding/embedding.service';
+import { PrismaClient, prisma } from '@prisma/client';
 
 @Injectable()
 export class IngestionService {
     constructor(
         private readonly chunking: ChunkingService,
         private readonly embedding: EmbeddingService
-        private readonly prisma: PrismaService
+        private readonly prisma: 
     ) {}
 
     async ingest(
